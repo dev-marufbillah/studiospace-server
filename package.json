@@ -12,7 +12,8 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts",
+    "make-host": "node scripts/make-host.mjs"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",
