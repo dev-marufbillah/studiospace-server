@@ -17,6 +17,7 @@ import { wishlistRouter } from "./modules/wishlist/wishlist.routes";
 import { reviewRouter } from "./modules/reviews/review.routes";
 import { userRouter } from "./modules/users/user.routes";
 import { uploadRouter } from "./modules/upload/upload.routes";
+import { newsletterRouter } from "./modules/newsletter/newsletter.routes";
 
 /** Builds the Express application (exported for tests). */
 export function createApp(): express.Express {
@@ -52,6 +53,7 @@ export function createApp(): express.Express {
   app.use("/api/wishlist", wishlistRouter);
   app.use("/api/users", userRouter);
   app.use("/api/upload", uploadRouter);
+  app.use("/api/newsletter", newsletterRouter);
   // Review routes carry their own /studios/:id/reviews paths.
   app.use("/api", reviewRouter);
 
