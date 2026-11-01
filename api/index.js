@@ -34,6 +34,8 @@ function resolveUrl(req) {
   const query = { ...(req.query || {}) };
   let original = query.__path;
   delete query.__path;
+  // Vercel's dynamic route may also attach its own `path` segment list.
+  delete query.path;
   if (Array.isArray(original)) original = original.join("/");
 
   const search = new URLSearchParams();
