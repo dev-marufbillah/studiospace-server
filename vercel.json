@@ -1,18 +1,1 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "buildCommand": "npm run build",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api/index?__path=$1"
-    }
-  ],
-  "functions": {
-    "api/index.js": {
-      "includeFiles": "dist/**",
-      "maxDuration": 30,
-      "memory": 1024
-    }
-  }
-}
+{"$schema":"https://openapi.vercel.sh/vercel.json","version":2,"buildCommand":"npm run build","rewrites":[{"source":"/(.*)","destination":"/api/index"}],"functions":{"api/index.js":{"includeFiles":"dist/**","maxDuration":30,"memory":1024},"api/[...path].js":{"includeFiles":"dist/**","maxDuration":30,"memory":1024}}}

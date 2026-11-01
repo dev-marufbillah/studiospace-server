@@ -46,7 +46,10 @@ function resolveUrl(req) {
   const qs = search.toString();
 
   // Fallback: Vercel already gave us the real path (no rewrite parameter).
-  const fallback = typeof req.url === "string" ? req.url : "/api";
+  const fallback =
+    (typeof req.url === "string" && req.url) ||
+    (req.headers && (req.headers["x-forwarded-uri"] || req.headers["x-original-url"])) ||
+    "/api";
   const path = original ? `/${String(original)}` : fallback.split("?")[0] || "/api";
   return qs ? `${path}?${qs}` : path;
 }
