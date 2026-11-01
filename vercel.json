@@ -1,9 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "buildCommand": "npm install --legacy-peer-deps && npm run build",
+  "buildCommand": "npm run build",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/index?__path=$1"
+    }
+  ],
   "functions": {
-    "api/[...path].js": {
+    "api/index.js": {
       "includeFiles": "dist/**",
       "maxDuration": 30,
       "memory": 1024
