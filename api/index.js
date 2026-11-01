@@ -50,8 +50,8 @@ function resolveUrl(req) {
     (typeof req.url === "string" && req.url) ||
     (req.headers && (req.headers["x-forwarded-uri"] || req.headers["x-original-url"])) ||
     "/api";
-  const path = original ? `/${String(original)}` : fallback.split("?")[0] || "/api";
-  return qs ? `${path}?${qs}` : path;
+  const path = original ? "/" + String(original) : fallback.split("?")[0] || "/api";
+  return qs ? path + "?" + qs : path;
 }
 
 module.exports = async function handler(req, res) {
