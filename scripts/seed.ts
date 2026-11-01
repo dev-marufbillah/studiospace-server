@@ -314,10 +314,12 @@ async function seed(): Promise<void> {
   });
 
   const inserted = await studios.insertMany(studioDocs);
+  // `insertMany` resolves to { insertedCount, insertedIds } — not documents.
+  const insertedIds = Object.values(inserted.insertedIds);
 
-  const reviewDocs = inserted.map((studio, studioIndex) =>
+  const reviewDocs = insertedIds.map((studioId, studioIndex) =>
     DEMO_REVIEWS.map((review, reviewIndex) => ({
-      studioId: studio._id.toHexString(),
+      studioId: studioId.toHexString(),
       userId: `demo-reviewer-${studioIndex}-${review.user}`,
       userName: review.name,
       rating: reviewIndex === 2 && studioIndex % 3 === 1 ? 4 : review.rating,
@@ -329,7 +331,7 @@ async function seed(): Promise<void> {
 
   await db.collection("reviews").insertMany(reviewDocs);
 
-  console.log(`Seeded ${inserted.length} studios and ${reviewDocs.length} demo reviews.`);
+  console.log(`Seeded ${insertedIds.length} studios and ${reviewDocs.length} demo reviews.`);
   console.log(`Image base URL: ${CLIENT_URL}/images/studios/`);
 }
 
