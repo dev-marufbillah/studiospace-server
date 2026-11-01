@@ -169,6 +169,22 @@ overlapping confirmed booking.
 
 ---
 
+## Making a real account the host of the seeded listings
+
+`npm run seed` creates the 12 demo studios under the placeholder owner
+`seeded-demo-host`, which nobody can log in as — so bookings on those studios stay
+**Pending** forever (only a studio's host can confirm a request). Run:
+
+```bash
+npm run make-host -- you@example.com          # reassign the 12 seeded listings
+npm run make-host -- you@example.com --all    # reassign every studio
+npm run make-host -- you@example.com --dry    # preview, change nothing
+```
+
+The account must already exist (`/register`). Afterwards open `/host` (Host Panel)
+or `/dashboard` → **Incoming reservations** → *Confirm*, and the renter's booking moves to
+**Confirmed** (invoice download becomes available).
+
 ## Double-booking prevention
 
 - Overlap rule: `existingStart < requestedEnd && existingEnd > requestedStart`.
