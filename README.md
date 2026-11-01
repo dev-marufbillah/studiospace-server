@@ -24,7 +24,7 @@ npm run dev               # http://localhost:5001/api/health
 | `npm run dev` | `tsx watch src/server.ts` |
 | `npm run build` / `npm start` | Compile to `dist/` and run |
 | `npm run typecheck` | `tsc --noEmit` |
-| `npm test` | Vitest + Supertest against an in-memory MongoDB (39 tests) |
+| `npm test` | Vitest + Supertest against an in-memory MongoDB (41 tests) |
 | `npm run seed` | Seed demo data (`-- --force` to clear and re-seed) |
 
 ---
@@ -223,7 +223,7 @@ failing later in production.
 ## Testing
 
 ```bash
-npm test          # 39 tests: CRUD, auth, ownership, 401/403/404/409, JWT tampering, upload, wishlist, newsletter
+npm test          # 41 tests: CRUD, auth, ownership, 401/403/404/409, JWT tampering, partial profile update, page-size limits, upload, wishlist, newsletter
 npm run typecheck # tsc --noEmit
 npm run build     # tsc emit to dist/
 ```
@@ -231,6 +231,13 @@ npm run build     # tsc emit to dist/
 The suite boots `mongodb-memory-server` (downloads a MongoDB binary on first run) and exercises the
 real Express app through Supertest — including a concurrent-request race that must produce exactly
 one confirmed booking.
+
+Full end-to-end sweep (needs both dev servers running):
+
+```bash
+bash scripts/qa-e2e.sh     # 72 checks: auth, CRUD, booking lifecycle, filters,
+                           # wishlist, reviews, profile, newsletter, routes
+```
 
 Manual smoke test:
 

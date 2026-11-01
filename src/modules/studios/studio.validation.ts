@@ -118,7 +118,7 @@ export const studioQuerySchema = z.object({
   ),
   limit: z.preprocess(
     emptyToUndefined,
-    z.coerce.number().int().min(1).max(24).optional()
+    z.coerce.number().int().min(1).max(60).optional()
   ),
 });
 

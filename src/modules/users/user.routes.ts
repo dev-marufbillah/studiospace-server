@@ -23,9 +23,11 @@ interface BetterAuthUserDoc {
   updatedAt?: unknown;
 }
 
+// Both fields are optional so clients can PATCH a single field, but at least
+// one must be present (previously `name`-only updates were rejected with 400).
 const updateProfileSchema = z
   .object({
-    name: z.string().trim().min(2, "Name must be at least 2 characters").max(80),
+    name: z.string().trim().min(2, "Name must be at least 2 characters").max(80).optional(),
     image: z
       .string()
       .trim()
@@ -33,9 +35,10 @@ const updateProfileSchema = z
       .refine(
         (value) => value === "" || /^https?:\/\//.test(value) || value.startsWith("/images/"),
         "Image must be an http(s) URL"
-      ),
+      )
+      .optional(),
   })
-  .refine((value) => Object.keys(value).length > 0, {
+  .refine((value) => value.name !== undefined || value.image !== undefined, {
     error: "Provide at least one field to update",
   });
 

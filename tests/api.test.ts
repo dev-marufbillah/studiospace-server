@@ -400,6 +400,19 @@ describe("studio CRUD & authorization", () => {
     expect(byCity.body.data.studios).toHaveLength(1);
   });
 
+  it("caps the page size and rejects oversized limits", async () => {
+    const host = await createUser("Page Host", "pagehost@example.com");
+    const token = await mintToken(host);
+    await createStudioAs(host, token, { title: "Page Size Studio" });
+
+    const tooBig = await request(app).get("/api/studios?limit=61");
+    expect(tooBig.status).toBe(400);
+
+    const maxAllowed = await request(app).get("/api/studios?limit=60");
+    expect(maxAllowed.status).toBe(200);
+    expect(Array.isArray(maxAllowed.body.data.studios)).toBe(true);
+  });
+
   it("returns at most 6 featured studios ordered by rating", async () => {
     const host = await createUser("Feature Host", "feature@example.com");
     const token = await mintToken(host);
@@ -809,6 +822,36 @@ describe("user profile", () => {
   it("requires authentication", async () => {
     expect((await request(app).get("/api/users/me")).status).toBe(401);
     expect((await request(app).patch("/api/users/me").send({ name: "X Y" })).status).toBe(401);
+  });
+
+  it("accepts a partial update (name only, image only)", async () => {
+    const user = await createUser("Partial User", "partial@example.com");
+    const token = await mintToken(user);
+
+    const nameOnly = await request(app)
+      .patch("/api/users/me")
+      .set(authHeader(token))
+      .send({ name: "Renamed Only" });
+    expect(nameOnly.status).toBe(200);
+    expect(nameOnly.body.data.user.name).toBe("Renamed Only");
+
+    const imageOnly = await request(app)
+      .patch("/api/users/me")
+      .set(authHeader(token))
+      .send({ image: "https://cdn.example.com/new.png" });
+    expect(imageOnly.status).toBe(200);
+    expect(imageOnly.body.data.user.image).toBe("https://cdn.example.com/new.png");
+    // the earlier name must survive an image-only patch
+    expect(imageOnly.body.data.user.name).toBe("Renamed Only");
+
+    const empty = await request(app).patch("/api/users/me").set(authHeader(token)).send({});
+    expect(empty.status).toBe(400);
+
+    const tooShort = await request(app)
+      .patch("/api/users/me")
+      .set(authHeader(token))
+      .send({ name: "A" });
+    expect(tooShort.status).toBe(400);
   });
 });
 
