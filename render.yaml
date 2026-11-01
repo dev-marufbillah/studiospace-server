@@ -1,0 +1,34 @@
+# Render blueprint for the StudioSpace Express API.
+# Create a new Blueprint from this repo (Root Directory: studiospace-server),
+# then fill the `sync: false` secrets in the Render dashboard.
+services:
+  - type: web
+    name: studiospace-api
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: .
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_NAME
+        value: studiospace
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: JWT_COOKIE_NAME
+        value: studiospace_session
+      # Secrets — set these in the Render dashboard, never in git:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: INTERNAL_API_SECRET
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: IMGBB_API_KEY
+        sync: false
