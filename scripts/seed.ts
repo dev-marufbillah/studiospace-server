@@ -7,14 +7,15 @@
  *
  * The seeded host profile is placeholder content (not a login account):
  * real accounts are only created through registration / Google OAuth.
- * Image URLs point at the Next.js public folder (set CLIENT_URL or
- * NEXT_PUBLIC_APP_URL when the frontend runs on another origin).
+ * Image URLs are stored as root-relative paths ("/images/studios/…") that
+ * resolve against whatever origin serves the web app — a hard-coded
+ * http://localhost:3000 prefix would break every card in production.
  */
 import { connectDatabase, closeDatabase, getDatabase } from "../src/config/database";
 import { ensureIndexes } from "../src/config/indexes";
 
-const CLIENT_URL =
-  process.env.CLIENT_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+/** Public folder of the Next.js app — same path locally and in production. */
+const IMAGE_BASE = "/images/studios";
 
 interface SeedStudio {
   slug: string;
@@ -300,8 +301,8 @@ async function seed(): Promise<void> {
       securityDeposit: seed.securityDeposit,
       maxCapacity: seed.maxCapacity,
       location: { address: seed.address, city: seed.city },
-      imageUrl: `${CLIENT_URL}/images/studios/${seed.image}`,
-      gallery: seed.gallery.map((name) => `${CLIENT_URL}/images/studios/${name}`),
+      imageUrl: `${IMAGE_BASE}/${seed.image}`,
+      gallery: seed.gallery.map((name) => `${IMAGE_BASE}/${name}`),
       amenities: seed.amenities,
       equipment: seed.equipment,
       ...HOST,
@@ -332,7 +333,7 @@ async function seed(): Promise<void> {
   await db.collection("reviews").insertMany(reviewDocs);
 
   console.log(`Seeded ${insertedIds.length} studios and ${reviewDocs.length} demo reviews.`);
-  console.log(`Image base URL: ${CLIENT_URL}/images/studios/`);
+  console.log(`Image base path: ${IMAGE_BASE}/`);
 }
 
 seed()
