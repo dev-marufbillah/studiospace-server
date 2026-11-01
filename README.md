@@ -5,8 +5,14 @@ wishlist, reviews, profiles and image upload. Express 5 + TypeScript + MongoDB (
 JWT in HTTPOnly cookies.
 
 - **Base URL (dev):** `http://localhost:5001`
+- **Base URL (live):** <https://studiospace-api-seven.vercel.app> · health:
+  <https://studiospace-api-seven.vercel.app/api/health>
+- **Live web app:** <https://studiospace-delta.vercel.app>
 - **Stack:** Express 5 · TypeScript · MongoDB 6 driver · Zod · jsonwebtoken · Helmet ·
   express-rate-limit · Vitest + Supertest
+- **Vercel entry:** `api/index.js` boots the same Express app per warm instance; `vercel.json`
+  rewrites every path to it and forwards the original URL in `?__path=` so routing and query
+  strings behave exactly like the long-running server.
 
 ---
 
